@@ -1,6 +1,8 @@
 # Kubernetes-Case-Study
 How to Deploy a Sample Website on Kubernetes Using Ingress - Kubernetes Case Study
 
+**For the detailed solution to this assignment, click this link:** https://medium.com/devops-guides/how-to-deploy-a-sample-website-on-kubernetes-using-ingress-kubernetes-case-study-1bcd0f54e2ae
+
 **#1:** Create an Instance
 
 **#2:** Update the Machine
