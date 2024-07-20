@@ -1,0 +1,139 @@
+#1: Update the Machine
+sudo apt-get update
+
+#2: Create the bash file
+nano a.sh
+
+#3: Paste these commands:
+sudo apt-get update
+sudo apt-get install docker.io -y
+sudo systemctl enable - now=docker
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+sudo chmod 777 /var/run/docker.sock
+minikube start - force - driver=docker
+sudo snap install kubectl - classic
+minikube status
+minikube addons enable ingress
+
+#4: Run the bash command:
+bash a.sh
+
+#5: To find the node:
+kubectl get nodes
+
+#6: Clone the repository:
+
+git clone https://github.com/hshar/website.git
+
+#7: View the directory:
+ls
+
+#8: Go to the website directory:
+cd website
+
+#9: Create a Dockerfile
+nano Dockerfile
+
+#10: Dockefile Commands:
+
+FROM ubuntu
+RUN apt-get update
+RUN apt-get install apache2 -y
+RUN apt-get install apache2-utils -y
+RUN apt-get clean
+ENTRYPOINT apachectl -D FOREGROUND
+ADD . /var/www/html/
+
+#11: Build the Image:
+sudo docker build –t img .
+
+#12: View the Docker Images, Run this command:
+docker images
+
+#13: Rename the Docker Image:
+sudo docker tag img visaltyagi12/k8casestudy
+
+#14: Again, view the renamed image:
+docker images
+
+#15: Login to the DockeHub Account:
+docker login
+
+#16: Push the Image to the Dockerhub account:
+docker push visaltyagi12/k8casestudy
+
+#17: Create a Custom Image With 2 Replicas:
+kubectl create deployment custom --image=visaltyagi12/k8scasestudy --replicas=2 --port=80
+
+#18: Check the deployments:
+kubectl get deploy -o wide
+
+#19: To check the pods:
+kubectl get pods
+
+#20: Create an Apache Deployment with 2 Replicas:
+kubectl create deployment apache --image=ubuntu/apache2 --replicas=2 --port=80
+
+#21: Check the deployments:
+kubectl get deploy -o wide
+
+#22: To check the pods:
+kubectl get pods
+
+#23: Expose Apache on NodePort:
+kubectl expose deploy apache --type=NodePort.
+
+#24: Expose Custom on NodePort:
+kubectl expose deploy custom --type=NodePort
+
+#25: To find the service:
+kubectl get svc -o wide
+
+#26: Create an ingress.yaml file
+nano ingress.yaml
+
+#27: Paste this Code:
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /apache
+        pathType: Prefix
+        backend:
+          service:
+            name: apache
+            port:
+              number: 80
+      - path: /custom
+        pathType: Prefix
+        backend:
+          service:
+            name: custom
+            port:
+              number: 80
+
+#28: Create an ingress:
+kubectl create -f ingress.yaml
+
+#29: Find the Ingress:
+kubectl get ing
+
+#30: Apply Port Forwarding:
+kubectl port-forward service/ingress-nginx-controller -n ingress-nginx --address 0.0.0.0 :443
+
+#31: To check the Apache Website, paste this URL to Browser Address Bar (Paste your own):
+https://35.92.5.20:46131/apache
+
+#32: To check the Custom Website, paste this URL to Browser Address Bar (Paste your own):
+https://35.92.5.20:46131/custom
+
+
+  
